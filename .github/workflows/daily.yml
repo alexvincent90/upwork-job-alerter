@@ -1,0 +1,29 @@
+name: Send Reddit Niche Digest
+
+on:
+  schedule:
+    - cron: '0 15 * * *'   # 8:00 AM US Pacific daily
+  workflow_dispatch:
+
+jobs:
+  send-digest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Run digest
+        env:
+          ANTHROPIC_API_KEY:  ${{ secrets.ANTHROPIC_API_KEY }}
+          RESEND_API_KEY:     ${{ secrets.RESEND_API_KEY }}
+          FROM_EMAIL:         "reddit@naviwork.tools"
+          FROM_NAME:          "SideProject Daily"
+          NEWSLETTER_NAME:    "SideProject Daily"
+          NEWSLETTER_TAGLINE: "Best of r/SideProject + r/startups, every morning"
+          SUBREDDITS:         "SideProject,startups,Entrepreneur"
+          TOP_N:              "8"
+        run: python main.py
