@@ -207,21 +207,25 @@ def get_subscribers() -> list[str]:
 
 
 def send_digest(subject: str, html: str, subscribers: list[str]) -> None:
+    import time
     resend.api_key = RESEND_API_KEY
     if not subscribers:
-        log.warning("No subscribers â sending test to FROM_EMAIL")
+        log.warning("No subscribers — sending test to FROM_EMAIL")
         subscribers = [FROM_EMAIL]
-    BATCH = 100
-    for i in range(0, len(subscribers), BATCH):
-        batch = subscribers[i:i + BATCH]
+
+    # Wait 1s to avoid Resend rate limit after audience/contacts API calls
+    time.sleep(1)
+    for i, email in enumerate(subscribers):
         params = resend.Emails.SendParams(
             from_=f"{FROM_NAME} <{FROM_EMAIL}>",
-            to=batch,
+            to=[email],
             subject=subject,
             html=html,
         )
-        resend.Emails.send(params)
-        log.info("Sent batch %d (%d recipients)", i // BATCH + 1, len(batch))
+        result = resend.Emails.send(params)
+        log.info("Sent to %s", email)
+        if i < len(subscribers) - 1:
+            time.sleep(0.6)
 
 
 # ââ Entrypoint âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
