@@ -1,7 +1,7 @@
 """
-Reddit Niche Digest — main.py
+Reddit Niche Digest â main.py
 Fetches top posts from configured subreddits, summarizes with Claude, sends via Resend.
-NOTE: This project was renamed from 'upwork-job-alerter' — the folder name no longer
+NOTE: This project was renamed from 'upwork-job-alerter' â the folder name no longer
 matches but the code is correct. Rename the folder to 'reddit-niche-digest' if you wish.
 
 Run daily via GitHub Actions.
@@ -24,7 +24,7 @@ FROM_EMAIL          = os.environ.get("FROM_EMAIL", "digest@yourdomain.com")
 FROM_NAME           = os.environ.get("FROM_NAME", "SideProject Daily")
 TOP_N               = int(os.environ.get("TOP_N", "8"))
 
-# ── Configure your target subreddits here ─────────────────────────────────────
+# ââ Configure your target subreddits here âââââââââââââââââââââââââââââââââââââ
 # You can run separate GitHub repos for different niches (each earns separately)
 SUBREDDITS = os.environ.get(
     "SUBREDDITS", "SideProject,startups,Entrepreneur"
@@ -34,7 +34,7 @@ NEWSLETTER_NAME    = os.environ.get("NEWSLETTER_NAME", "SideProject Daily")
 NEWSLETTER_TAGLINE = os.environ.get("NEWSLETTER_TAGLINE", "Best of r/SideProject + r/startups, every morning")
 
 
-# ── 1. Fetch top Reddit posts ─────────────────────────────────────────────────
+# ââ 1. Fetch top Reddit posts âââââââââââââââââââââââââââââââââââââââââââââââââ
 def fetch_top_posts(subreddits: list[str], n: int = 8) -> list[dict]:
     """
     Use Reddit's JSON API (no auth needed for public subreddits).
@@ -85,7 +85,7 @@ def fetch_top_posts(subreddits: list[str], n: int = 8) -> list[dict]:
     return unique
 
 
-# ── 2. Summarize with Claude ───────────────────────────────────────────────────
+# ââ 2. Summarize with Claude âââââââââââââââââââââââââââââââââââââââââââââââââââ
 def summarize_posts(posts: list[dict]) -> list[dict]:
     client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
@@ -121,9 +121,9 @@ def summarize_posts(posts: list[dict]) -> list[dict]:
     return posts
 
 
-# ── 3. Build email ─────────────────────────────────────────────────────────────
+# ââ 3. Build email âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 def build_email(posts: list[dict], date_str: str) -> tuple[str, str]:
-    subject = f"🚀 {NEWSLETTER_NAME} — {date_str}: {posts[0]['title'][:45]}…"
+    subject = f"ð {NEWSLETTER_NAME} â {date_str}: {posts[0]['title'][:45]}â¦"
 
     items_html = ""
     for i, p in enumerate(posts, 1):
@@ -141,14 +141,14 @@ def build_email(posts: list[dict], date_str: str) -> tuple[str, str]:
         <div style="margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid #f4f4f4">
           <div style="margin-bottom:6px">{sub_badge}{flair_badge}</div>
           <div style="font-size:11px;color:#aaa;margin-bottom:5px">
-            ▲ {p['score']:,} pts &nbsp;·&nbsp; 💬 {p['comments']:,} comments
+            â² {p['score']:,} pts &nbsp;Â·&nbsp; ð¬ {p['comments']:,} comments
           </div>
           <div style="font-size:17px;font-weight:700;line-height:1.3;margin-bottom:6px">
             <a href="{p['url']}" style="color:#1a1a1a;text-decoration:none">{p['title']}</a>
           </div>
           <div style="font-size:14px;color:#555;line-height:1.5;margin-bottom:7px">{p.get('summary', '')}</div>
           <a href="{p['reddit_url']}" style="font-size:12px;color:#ff4500;font-weight:600;text-decoration:none">
-            Read discussion →
+            Read discussion â
           </a>
         </div>"""
 
@@ -159,20 +159,20 @@ def build_email(posts: list[dict], date_str: str) -> tuple[str, str]:
   <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:30px">
     <tr>
       <td>
-        <span style="font-size:22px;font-weight:800;color:#ff4500">🚀 {NEWSLETTER_NAME}</span>
-        <div style="font-size:13px;color:#888;margin-top:3px">{date_str} &nbsp;·&nbsp; {NEWSLETTER_TAGLINE}</div>
+        <span style="font-size:22px;font-weight:800;color:#ff4500">ð {NEWSLETTER_NAME}</span>
+        <div style="font-size:13px;color:#888;margin-top:3px">{date_str} &nbsp;Â·&nbsp; {NEWSLETTER_TAGLINE}</div>
       </td>
     </tr>
   </table>
   {items_html}
 
-  <!-- SPONSOR SLOT — replace this block when you have a sponsor -->
+  <!-- SPONSOR SLOT â replace this block when you have a sponsor -->
   <!--
   <div style="background:#fffbf0;border:1px solid #ffe0a0;border-radius:8px;padding:16px;margin:24px 0">
     <div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Sponsored</div>
     <div style="font-weight:700;margin-bottom:4px">Your product here</div>
     <div style="font-size:13px;color:#555">One sentence pitch to {len(posts)}k+ indie makers.</div>
-    <a href="#" style="font-size:12px;color:#ff4500;font-weight:700">Learn more →</a>
+    <a href="#" style="font-size:12px;color:#ff4500;font-weight:700">Learn more â</a>
   </div>
   -->
 
@@ -186,7 +186,7 @@ def build_email(posts: list[dict], date_str: str) -> tuple[str, str]:
     return subject, html
 
 
-# ── 4 & 5. Subscribers + Send ──────────────────────────────────────────────────
+# ââ 4 & 5. Subscribers + Send ââââââââââââââââââââââââââââââââââââââââââââââââââ
 def get_audience_id() -> str:
     r = requests.get(
         "https://api.resend.com/audiences",
@@ -209,7 +209,7 @@ def get_subscribers() -> list[str]:
 def send_digest(subject: str, html: str, subscribers: list[str]) -> None:
     resend.api_key = RESEND_API_KEY
     if not subscribers:
-        log.warning("No subscribers — sending test to FROM_EMAIL")
+        log.warning("No subscribers â sending test to FROM_EMAIL")
         subscribers = [FROM_EMAIL]
     BATCH = 100
     for i in range(0, len(subscribers), BATCH):
@@ -224,19 +224,19 @@ def send_digest(subject: str, html: str, subscribers: list[str]) -> None:
         log.info("Sent batch %d (%d recipients)", i // BATCH + 1, len(batch))
 
 
-# ── Entrypoint ─────────────────────────────────────────────────────────────────
+# ââ Entrypoint âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 def main():
     date_str = datetime.now(timezone.utc).strftime("%B %-d, %Y")
     log.info("Starting %s for %s", NEWSLETTER_NAME, date_str)
     try:
         posts = fetch_top_posts(SUBREDDITS, TOP_N)
         if not posts:
-            raise ValueError("No posts found — check SUBREDDITS env var")
+            raise ValueError("No posts found â check SUBREDDITS env var")
         posts = summarize_posts(posts)
         subject, html = build_email(posts, date_str)
         subscribers = get_subscribers()
         send_digest(subject, html, subscribers)
-        log.info("Done ✓")
+        log.info("Done â")
     except Exception as e:
         log.exception("Fatal: %s", e)
         raise
