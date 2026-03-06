@@ -237,9 +237,9 @@ def main():
         if not posts:
             log.warning("Reddit blocked — using placeholder posts")
             posts = [
-                {"title": "Show HN: I built a profitable SaaS solo in 3 months", "url": "https://news.ycombinator.com", "subreddit": "SideProject", "score": 342, "comments": 87, "summary": ""},
-                {"title": "From 0 to $5k MRR: lessons learned building in public", "url": "https://reddit.com/r/SideProject", "subreddit": "startups", "score": 289, "comments": 64, "summary": ""},
-                {"title": "Why most side projects fail in the first 90 days", "url": "https://reddit.com/r/Entrepreneur", "subreddit": "Entrepreneur", "score": 201, "comments": 53, "summary": ""},
+                {"title": "Show HN: I built a profitable SaaS solo in 3 months", "url": "https://news.ycombinator.com", "reddit_url": "https://reddit.com/r/SideProject", "subreddit": "SideProject", "flair": "", "score": 342, "comments": 87, "summary": ""},
+                {"title": "From 0 to $5k MRR: lessons learned building in public", "url": "https://reddit.com/r/SideProject", "reddit_url": "https://reddit.com/r/SideProject", "subreddit": "startups", "flair": "", "score": 289, "comments": 64, "summary": ""},
+                {"title": "Why most side projects fail in the first 90 days", "url": "https://reddit.com/r/Entrepreneur", "reddit_url": "https://reddit.com/r/Entrepreneur", "subreddit": "Entrepreneur", "flair": "", "score": 201, "comments": 53, "summary": ""},
             ]
         posts = summarize_posts(posts)
         subject, html = build_email(posts, date_str)
